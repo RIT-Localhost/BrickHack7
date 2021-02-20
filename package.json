@@ -1,0 +1,24 @@
+{
+  "name": "brickhack7",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RIT-Localhost/BrickHack7.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RIT-Localhost/BrickHack7/issues"
+  },
+  "homepage": "https://github.com/RIT-Localhost/BrickHack7#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "node": "^15.8.0"
+  }
+}
