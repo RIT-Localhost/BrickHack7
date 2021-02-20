@@ -26,7 +26,7 @@ function addEvent(message) {
   let newEvent = {};
   newEvent.name = eventName;
   console.log(eventName)
-  if (message.search("--t") != -1) {
+  if (message.content.search("--t") != -1) {
     console.log("Found time flag")
     let time = fields.split("--t")[1].split("--")[0].strip();
     console.log(time);
