@@ -18,30 +18,34 @@ discordClient.on('message', message => {
 })
 
 let events = [];
+let fields = [];
 
 function addEvent(message) {
   fields = message.content.split("--");
-  eventName = fields[0].split("!addevent ");
+  eventName = fields[0].split("!addevent ")[1];
 
   let newEvent = {};
   newEvent.name = eventName;
   console.log(eventName)
   if (message.content.search("--t") != -1) {
     console.log("Found time flag")
-    let time = fields.split("--t")[1].split("--")[0].strip();
+    let time = message.content.split("--t")[1].split("--")[0];
     console.log(time);
     newEvent.time = time;
     var eventTime = new Date(time);
     var currentTime = new Date().getTime();
-    var offset = currentTime - eventTime;
+    console.log("Event Time: " + eventTime);
+    console.log("Current Time: " + currentTime);
+    var offset = eventTime - currentTime;
+    console.log("Offset: " + offset);
     setTimeout(function() {eventReminder(message.channel, newEvent.name)}, offset);
 
   }
   else {
     newEvent.time = "";
   }
-  if (message.content.search("--d") != 1) {
-    let description = fields.split("--d")[1].split("--")[0].strip();
+  if (message.content.search("--d") != -1) {
+    let description = message.content.split("--d")[1].split("--")[0];
     newEvent.description = description;
   }
   else {
