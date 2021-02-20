@@ -11,7 +11,7 @@ discordClient.on('ready', () => {
 discordClient.login(process.env.DISCORD_API_TOKEN) // make sure the key is called DISCORD_API_TOKEN
 
 discordClient.on('message', message => {
-  if (message.startsWith("!addevent")) {
+  if (message.content.startsWith("!addevent ")) {
     console.log("Recognized message.")
     addEvent(message);
   }
@@ -20,7 +20,7 @@ discordClient.on('message', message => {
 let events = [];
 
 function addEvent(message) {
-  fields = message.split("--");
+  fields = message.content.split("--");
   eventName = fields[0].split("!addevent ");
 
   let newEvent = {};
@@ -34,13 +34,13 @@ function addEvent(message) {
     var eventTime = new Date(time);
     var currentTime = new Date().getTime();
     var offset = currentTime - eventTime;
-    setTimeout(function() {eventReminder(channel, newEvent.name)}, offset);
+    setTimeout(function() {eventReminder(message.channel, newEvent.name)}, offset);
 
   }
   else {
     newEvent.time = "";
   }
-  if (message.search("--d") != 1) {
+  if (message.content.search("--d") != 1) {
     let description = fields.split("--d")[1].split("--")[0].strip();
     newEvent.description = description;
   }
