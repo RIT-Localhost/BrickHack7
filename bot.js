@@ -37,35 +37,54 @@ let events = [];
 let fields = [];
 
 function addEvent(message) {
-  const fields = message.toString().split(' --t ');
+  const fields = message.toString().split(' --');
   const eventName = fields[0].split('!addevent ')[1];
 
   let newEvent = {};
   newEvent.name = eventName;
   console.log(eventName);
-  if (message.toString().search('--t') != -1) {
-    console.log('Found time flag');
-    let time = fields[1];
-    console.log(time);
-    newEvent.time = time;
-    let eventTime = new Date(time);
-    let currentTime = new Date().getTime();
-    let offset = currentTime - eventTime;
-    setTimeout(function () {
-      eventReminder(message.channel, newEvent.name);
-    }, offset);
-  } else {
-    newEvent.time = '';
-  }
   if (message.toString().search('--d') != 1) {
     let description = fields;
     newEvent.description = description;
   } else {
     newEvent.description = '';
   }
+  if (message.content.search('--w') != -1) {
+      console.log("Found w");
+      var weekly = true;
+  } else {
+      var weekly = false;
+  }
+  if (message.content.search('--m') != -1) {
+      var monthly = true;
+  } else {
+      var monthly = false;
+  }
+  if (message.toString().search('--t') != -1) {
+    console.log('Found time flag');
+    let time = message.toString().split(' --t ')[1].split(' --')[0];
+    console.log(time);
+    newEvent.time = time;
+    console.log("User inputted time: ", time);
+    let eventTime = new Date(time);
+    let currentTime = new Date();
+    let offset = eventTime - currentTime;
+    console.log("Event time: " + eventTime);
+    console.log("Current time: " + currentTime);
+    console.log("Offset: " + offset);
+    setTimeout(function () {
+      eventReminder(message.channel, newEvent.name, weekly);
+    }, offset);
+  } else {
+    newEvent.time = '';
+  }
 }
 
-function eventReminder(channel, eventName) {
+function eventReminder(channel, eventName, weekly) {
   console.log('Event time.');
-  channel.send('@everyone ' + eventName + ' HAPPENING NOW!');
+  channel.send('everyone ' + eventName + ' HAPPENING NOW!');
+  if (weekly == true) {
+    console.log("Into weekly.");
+    setInterval(function() {channel.send('everyone ' + eventName + ' HAPPENING NOW!');}, 1000 * 60 * 60 * 24 * 7);
+  }
 }
