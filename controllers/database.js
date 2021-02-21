@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 mongoose
   .connect(
-    'mongodb+srv://server:4miU3E2jMj3NBzSr@snowman.amzug.mongodb.net/snowman?retryWrites=true&w=majority',
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@snowman.amzug.mongodb.net/snowman?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .catch(err => console.error(err));
