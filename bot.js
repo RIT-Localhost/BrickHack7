@@ -9,7 +9,20 @@ discordClient.on('ready', () => {
 // discordClient.login(config.discordApiToken)
 discordClient.login(process.env.DISCORD_API_TOKEN); // make sure the key is called DISCORD_API_TOKEN
 
-const makeEventFunction = require('./controllers/sendReminder')
+const makeEventFunction = require('./controllers/sendReminder');
+
+const helpEmbed = new Discord.MessageEmbed()
+  .setTitle("Snowman Help")
+  .setDescription("!addevent <flags>")
+  .addFields(
+    {name:'--t', value:'Time stamp (required)'},
+    {name:'--w', value:'Repeat weekly (simply add the flag for true)'},
+    {name:'--m', value:'Repeat monthly (coming soon)'},
+    {name:'--d', value:'Description (String)'},
+    {name:'--c', value:'Channel (#tag-the-channel-like-so)'},
+    {name:'--r', value:'Role (@ a member or role)'}
+  )
+  .setColor(5963579);
 
 discordClient.on('message', message => {
   const parser = message.toString().split(' ');
@@ -28,6 +41,7 @@ discordClient.on('message', message => {
     case '!snowman':
     case '!snowman help':
       // User can get a help message
+      message.reply(helpEmbed);
       break;
     default:
       // do nothing
@@ -114,7 +128,12 @@ function addEvent(message) {
 }
 
 function eventReminder(channel, eventName, weekly, monthly, role, description) {
-  channel.send(role + ' ' + eventName + ': ' + description + '----> HAPPENING NOW!');
+  const embed = new Discord.MessageEmbed()
+    .setTitle(eventName)
+    .setDescription(description)
+    .setColor('905706');
+  channel.send(role);
+  channel.send(embed);
   if (weekly == true) {
     setInterval(function () {
       channel.send(role + ' ' + eventName + ': ' + description + '----> HAPPENING NOW!');
