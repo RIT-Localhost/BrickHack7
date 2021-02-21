@@ -19,6 +19,8 @@
   "homepage": "https://github.com/RIT-Localhost/BrickHack7#readme",
   "dependencies": {
     "discord.js": "^12.5.1",
-    "node": "^15.8.0"
+    "mongoose": "^5.11.17",
+    "node": "^15.8.0",
+    "uuidv4": "^6.2.6"
   }
 }

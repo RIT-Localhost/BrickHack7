@@ -11,20 +11,20 @@ discordClient.login(process.env.DISCORD_API_TOKEN); // make sure the key is call
 
 discordClient.on('message', message => {
   const parser = message.toString().split(' ');
-  switch(parser[0]){
-    case "!addevent":
+  switch (parser[0]) {
+    case '!addevent':
       // User can add an event
       console.log('Recognized message.');
       addEvent(message);
       break;
-    case "!displayevents":
+    case '!displayevents':
       // User can display events
       break;
-    case "!deleteevent":
+    case '!deleteevent':
       // User can delete events
       break;
-    case "!snowman":
-    case "!snowman help":
+    case '!snowman':
+    case '!snowman help':
       // User can get a help message
       break;
     default:
@@ -47,23 +47,23 @@ function addEvent(message) {
     let description = message.content.split(' --d ')[1].split(' --')[0];
     newEvent.description = description;
   } else {
-    let description = "";
+    let description = '';
     newEvent.description = '';
   }
   if (message.content.search('--w') != -1) {
-    console.log("Found w");
+    console.log('Found w');
     var weekly = true;
-    newEvent.weekly = "true";
+    newEvent.weekly = 'true';
   } else {
     var weekly = false;
-    newEvent.weekly = "false";
+    newEvent.weekly = 'false';
   }
   if (message.content.search('--m') != -1) {
     var monthly = true;
-    newEvent.monthly = "true";
+    newEvent.monthly = 'true';
   } else {
     var monthly = false;
-    newEvent.monthly = "false";
+    newEvent.monthly = 'false';
   }
   if (message.content.search('--c') != -1) {
     let channelName = message.content.split(' --c ')[1].split(' --')[0];
@@ -71,22 +71,23 @@ function addEvent(message) {
     channel = discordClient.channels.cache.get(channelName);
     newEvent.channel = channel;
   } else {
-    newEvent.channel = "";
+    newEvent.channel = '';
   }
   if (message.content.search('--r') != -1) {
     var role = message.content.split(' --r ')[1].split(' --')[0];
   } else {
-    role = "everyone";
+    role = 'everyone';
   }
   newEvent.role = role;
   if (message.toString().search('--t') != -1) {
     let time = message.toString().split(' --t ')[1].split(' --')[0];
     console.log(time);
     newEvent.time = time;
-    console.log("User inputted time: ", time);
+    console.log('User inputted time: ', time);
     let eventTime = new Date(time);
     let currentTime = new Date();
     let offset = eventTime - currentTime;
+
     setTimeout(function () {
       eventReminder(channel, newEvent.name, weekly, monthly, role);
     }, offset);
@@ -98,7 +99,9 @@ function addEvent(message) {
 function eventReminder(channel, eventName, weekly, monthly, role) {
   channel.send(role + ' ' + eventName + ' HAPPENING NOW!');
   if (weekly == true) {
-    setInterval(function() {channel.send(role + ' ' + eventName + ' HAPPENING NOW!');}, 1000 * 60 * 60 * 24 * 7);
+    setInterval(function () {
+      channel.send(role + ' ' + eventName + ' HAPPENING NOW!');
+    }, 1000 * 60 * 60 * 24 * 7);
   }
   if (monthly == true) {
     let currentTime = new Date();
@@ -120,9 +123,9 @@ function eventReminder(channel, eventName, weekly, monthly, role) {
     month = (month % 12) + 1;
     let eventTime = new Date(year, month, day, hour, minute, millis);
     let offset = eventTime - currentTime;
-    console.log("Event time: " + eventTime);
-    console.log("Current time: " + currentTime);
-    console.log("Offset: " + offset);
+    console.log('Event time: ' + eventTime);
+    console.log('Current time: ' + currentTime);
+    console.log('Offset: ' + offset);
     setTimeout(function () {
       eventReminder(channel, eventName, false, true, role);
     }, offset);
