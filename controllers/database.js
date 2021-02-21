@@ -12,6 +12,9 @@ const eventSchema = new mongoose.Schema({
   user: String,
   description: String,
   datetime: Date,
+  title: String,
+  weekly: Boolean,
+  monthly: Boolean
 });
 
 const Event = mongoose.model('Event', eventSchema);

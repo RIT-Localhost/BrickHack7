@@ -9,6 +9,8 @@ discordClient.on('ready', () => {
 // discordClient.login(config.discordApiToken)
 discordClient.login(process.env.DISCORD_API_TOKEN); // make sure the key is called DISCORD_API_TOKEN
 
+const makeEventFunction = require('./controllers/sendReminder')
+
 discordClient.on('message', message => {
   const parser = message.toString().split(' ');
   switch (parser[0]) {
@@ -44,10 +46,10 @@ function addEvent(message) {
   events.push(newEvent);
   newEvent.name = eventName;
   if (message.toString().search('--d') != -1) {
-    let description = message.content.split(' --d ')[1].split(' --')[0];
+    var description = message.content.split(' --d ')[1].split(' --')[0];
     newEvent.description = description;
   } else {
-    let description = '';
+    var description = '';
     newEvent.description = '';
   }
   if (message.content.search('--w') != -1) {
@@ -58,13 +60,13 @@ function addEvent(message) {
     var weekly = false;
     newEvent.weekly = 'false';
   }
-  if (message.content.search('--m') != -1) {
-    var monthly = true;
-    newEvent.monthly = 'true';
-  } else {
-    var monthly = false;
-    newEvent.monthly = 'false';
-  }
+  // if (message.content.search('--m') != -1) {
+  //   var monthly = true;
+  //   newEvent.monthly = 'true';
+  // } else {
+  //   var monthly = false;
+  //   newEvent.monthly = 'false';
+  // }
   if (message.content.search('--c') != -1) {
     let channelName = message.content.split(' --c ')[1].split(' --')[0];
     channelName = channelName.substring(2, channelName.length - 1);
@@ -76,7 +78,7 @@ function addEvent(message) {
   if (message.content.search('--r') != -1) {
     var role = message.content.split(' --r ')[1].split(' --')[0];
   } else {
-    role = 'everyone';
+    role = '@everyone';
   }
   newEvent.role = role;
   if (message.toString().search('--t') != -1) {
@@ -93,7 +95,20 @@ function addEvent(message) {
     }, offset);
   } else {
     newEvent.time = '';
+    var eventTime = new Date();
   }
+
+  // Add event to the database
+  makeEventFunction(
+    message.guild.toString(),
+     channel.toString(), 
+     role.toString(), 
+     description.toString(), 
+     eventTime, 
+     eventName.toString(), 
+     weekly, 
+     false);
+
 }
 
 function eventReminder(channel, eventName, weekly, monthly, role) {
@@ -103,31 +118,31 @@ function eventReminder(channel, eventName, weekly, monthly, role) {
       channel.send(role + ' ' + eventName + ' HAPPENING NOW!');
     }, 1000 * 60 * 60 * 24 * 7);
   }
-  if (monthly == true) {
-    let currentTime = new Date();
-    let year = currentTime.getFullYear();
-    let month = currentTime.getMonth();
-    let day = currentTime.getDate();
-    let hour = currentTime.getHours();
-    let minute = currentTime.getMinutes();
-    let millis = currentTime.getMilliseconds();
-    if (month == 12) {
-      year++;
-    }
-    if (month == 1 && day > 28) {
-      day = 28;
-    }
-    if (day > 30 && (month == 3 || month == 5 || month == 8 || month == 10)) {
-      day = 30;
-    }
-    month = (month % 12) + 1;
-    let eventTime = new Date(year, month, day, hour, minute, millis);
-    let offset = eventTime - currentTime;
-    console.log('Event time: ' + eventTime);
-    console.log('Current time: ' + currentTime);
-    console.log('Offset: ' + offset);
-    setTimeout(function () {
-      eventReminder(channel, eventName, false, true, role);
-    }, offset);
-  }
+  // if (monthly == true) {
+  //   let currentTime = new Date();
+  //   let year = currentTime.getFullYear();
+  //   let month = currentTime.getMonth();
+  //   let day = currentTime.getDate();
+  //   let hour = currentTime.getHours();
+  //   let minute = currentTime.getMinutes();
+  //   let millis = currentTime.getMilliseconds();
+  //   if (month == 12) {
+  //     year++;
+  //   }
+  //   if (month == 1 && day > 28) {
+  //     day = 28;
+  //   }
+  //   if (day > 30 && (month == 3 || month == 5 || month == 8 || month == 10)) {
+  //     day = 30;
+  //   }
+  //   month = (month % 12) + 1;
+  //   let eventTime = new Date(year, month, day, hour, minute, millis);
+  //   let offset = eventTime - currentTime;
+  //   console.log('Event time: ' + eventTime);
+  //   console.log('Current time: ' + currentTime);
+  //   console.log('Offset: ' + offset);
+  //   setTimeout(function () {
+  //     eventReminder(channel, eventName, false, true, role);
+  //   }, offset);
+  // }
 }
