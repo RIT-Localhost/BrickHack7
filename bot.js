@@ -68,12 +68,13 @@ function addEvent(message) {
   //   newEvent.monthly = 'false';
   // }
   if (message.content.search('--c') != -1) {
-    let channelName = message.content.split(' --c ')[1].split(' --')[0];
+    var channelName = message.content.split(' --c ')[1].split(' --')[0];
     channelName = channelName.substring(2, channelName.length - 1);
     channel = discordClient.channels.cache.get(channelName);
     newEvent.channel = channel;
   } else {
     newEvent.channel = '';
+    channelName = message.channel.toString();
   }
   if (message.content.search('--r') != -1) {
     var role = message.content.split(' --r ')[1].split(' --')[0];
@@ -91,7 +92,7 @@ function addEvent(message) {
     let offset = eventTime - currentTime;
 
     setTimeout(function () {
-      eventReminder(channel, newEvent.name, weekly, monthly, role);
+      eventReminder(channel, newEvent.name, weekly, false, role, description);
     }, offset);
   } else {
     newEvent.time = '';
@@ -100,22 +101,23 @@ function addEvent(message) {
 
   // Add event to the database
   makeEventFunction(
-    message.guild.toString(),
-     channel.toString(), 
+     message.guild.toString(),
+     channelName, 
      role.toString(), 
      description.toString(), 
      eventTime, 
      eventName.toString(), 
      weekly, 
-     false);
+     false
+    );
 
 }
 
-function eventReminder(channel, eventName, weekly, monthly, role) {
-  channel.send(role + ' ' + eventName + ' HAPPENING NOW!');
+function eventReminder(channel, eventName, weekly, monthly, role, description) {
+  channel.send(role + ' ' + eventName + ': ' + description + '----> HAPPENING NOW!');
   if (weekly == true) {
     setInterval(function () {
-      channel.send(role + ' ' + eventName + ' HAPPENING NOW!');
+      channel.send(role + ' ' + eventName + ': ' + description + '----> HAPPENING NOW!');
     }, 1000 * 60 * 60 * 24 * 7);
   }
   // if (monthly == true) {

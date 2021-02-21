@@ -1,7 +1,7 @@
-const event = require('./database');
+const Event = require('./database');
 
 function makeEvent(serverID, channelID, userID, descriptionInput, datetimeObj, titleInput, weeklyInput, monthlyInput){
-    const event = new Event({
+    const tempEvent = new Event({
         server: serverID,
         channel: channelID,
         user: userID,
@@ -11,7 +11,7 @@ function makeEvent(serverID, channelID, userID, descriptionInput, datetimeObj, t
         weekly: weeklyInput,
         monthly: monthlyInput
     });
-    event.save();
+    tempEvent.save();
 }
 
 module.exports = makeEvent;
